@@ -27,32 +27,34 @@ import { toast } from "sonner";
 import ReceiptScanner from "./ReceiptScanner";
 import { motion } from "framer-motion";
 
-interface AddTransactionFormProps {
-  accounts: any[];
-  categories: any[];
-  editMode?: boolean;
-  initialData?: {
-    id: string;
-    type: "INCOME" | "EXPENSE";
-    amount: number;
-    description: string;
-    accountId: string;
-    date: string | Date;
-    category: string;
-    isRecurring: boolean;
-    recurringInterval?: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
-  } | null;
-}
+// interface AddTransactionFormProps {
+//   accounts: any[];
+//   categories: any[];
+//   editMode?: boolean;
+//   initialData?: {
+//     id: string;
+//     type: "INCOME" | "EXPENSE";
+//     amount: number;
+//     description: string;
+//     accountId: string;
+//     date: string | Date;
+//     category: string;
+//     isRecurring: boolean;
+//     recurringInterval?: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY";
+//   } | null;
+// }
 
 const AddTransactionForm = ({
   accounts,
   categories,
   editMode = false,
   initialData = null
-}: AddTransactionFormProps) => {
+}:any) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get("edit");
+
+  //console.log(editId);
 
   const {
     register, setValue,
@@ -61,20 +63,8 @@ const AddTransactionForm = ({
     getValues, reset
   } = useForm({
     resolver: zodResolver(TransactionSchema),
-    defaultValues: {
-      type: "EXPENSE",
-      amount: "",
-      description: "",
-      accountId: accounts.find((ac) => ac.isDefault)?.id,
-      date: new Date(),
-      category: "",
-      isRecurring: false,
-    }
-  });
-
-  useEffect(() => {
-    if (editMode && initialData) {
-      reset({
+    defaultValues:
+    editMode && initialData?{
         type: initialData.type,
         amount: initialData.amount.toString(),
         description: initialData.description,
@@ -85,9 +75,19 @@ const AddTransactionForm = ({
         ...(initialData.recurringInterval && {
           recurringInterval: initialData.recurringInterval
         })
-      });
+    }:
+    {
+      type: "EXPENSE",
+      amount: "",
+      description: "",
+      accountId: accounts.find((ac) => ac.isDefault)?.id,
+      date: new Date(),
+      category: "",
+      isRecurring: false,
     }
-  }, [initialData, editMode, reset]);
+  });
+
+
 
   const {
     loading: transactionLoading,

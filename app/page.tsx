@@ -10,6 +10,8 @@ import Image from "next/image";
 import EverythingTimeline from "@/components/timeline";
 import HowItWorksSection  from "@/components/howItWorks";
 import Testimonials from "@/components/testimonials";
+import CTA from "@/components/cta";
+
 // Main Landing Page Component
 export default function Home() {
   return (
@@ -37,9 +39,9 @@ export default function Home() {
             <HowItWorksSection  />
       
             <Testimonials/>
+            <CTA/>
 
-
-      <section className="py-20 bg-gradient-to-r from-violet-100 via-sky-100 to-fuchsia-100">
+      {/* <section className="py-20 bg-gradient-to-r from-violet-100 via-sky-100 to-fuchsia-100">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">
             Every Choice Shapes Your Story
@@ -54,7 +56,7 @@ export default function Home() {
             </Button>
           </Link>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

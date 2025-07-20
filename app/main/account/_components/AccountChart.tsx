@@ -208,7 +208,7 @@ export default function AccountChart({ transactions }) {
                         `₹${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
                       }
                       contentStyle={{
-                        background: "#18162c",
+                        background: "pink",
                         border: "1px solid #8b5cf6",
                         borderRadius: 12,
                         color: "white"
@@ -292,7 +292,7 @@ export default function AccountChart({ transactions }) {
                         `₹${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2 })}`
                       }
                       contentStyle={{
-                        background: "#121b1c",
+                        background: "teal",
                         border: "1px solid #34d399",
                         borderRadius: 12,
                         color: "white"

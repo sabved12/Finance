@@ -152,12 +152,20 @@ const DashboardOverview = ({ accounts, transactions }) => {
             </div>
           ) : (
             <>
+            <div className="mb-2 flex items-center justify-between">
+            <span className="text-lg font-bold text-violet-200">
+                Total This Month
+            </span>
+            <span className="text-2xl font-extrabold text-pink-400 dark:text-pink-300 drop-shadow-sm">
+                ₹{totalPie.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </span>
+            </div>
               <ResponsiveContainer width="100%" height={226}>
                 <PieChart>
                   <Tooltip
                     formatter={(v) => `₹${v.toLocaleString(undefined, { minimumFractionDigits: 2 })}`}
                     contentStyle={{
-                      backgroundColor: "#272044",
+                      backgroundColor: "pink",
                       border: "1px solid #8b5cf6",
                       borderRadius: 12,
                       color: "white"

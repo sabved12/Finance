@@ -36,24 +36,7 @@ const Header: React.FC = async () => {
         {/* Nav links (for public) */}
         <div className="hidden md:flex items-center gap-8">
           <SignedOut>
-            <a
-              href="#features"
-              className="relative text-lg font-medium text-gray-800 dark:text-white px-5 py-2 rounded-lg transition-all duration-200
-                hover:bg-gray-100 dark:hover:bg-gray-800
-                before:absolute before:left-5 before:bottom-1 before:w-[calc(100%-2.5rem)] before:h-0.5 before:bg-gray-800 dark:before:bg-white before:scale-x-0 hover:before:scale-x-100 before:transition-transform before:duration-300 before:origin-left"
-              style={{ overflow: "hidden" }}
-            >
-              Features
-            </a>
-            <a
-              href="#testimonials"
-              className="relative text-lg font-medium text-gray-800 dark:text-white px-5 py-2 rounded-lg transition-all duration-200
-                hover:bg-gray-100 dark:hover:bg-gray-800
-                before:absolute before:left-5 before:bottom-1 before:w-[calc(100%-2.5rem)] before:h-0.5 before:bg-gray-800 dark:before:bg-white before:scale-x-0 hover:before:scale-x-100 before:transition-transform before:duration-300 before:origin-left"
-              style={{ overflow: "hidden" }}
-            >
-              Testimonials
-            </a>
+
           </SignedOut>
         </div>
 

@@ -75,16 +75,7 @@ useEffect(()=>{
             {type.charAt(0) + type.slice(1).toLowerCase()} Account
           </p>
         </CardContent>
-        <CardFooter className="flex justify-between text-sm text-violet-700 dark:text-violet-200">
-          <div className="flex items-center">
-            <ArrowUpRight className="mr-1 h-4 w-4 text-green-500" />
-            Income
-          </div>
-          <div className="flex items-center">
-            <ArrowDownRight className="mr-1 h-4 w-4 text-red-500" />
-            Expense
-          </div>
-        </CardFooter>
+      
         {/* Glow on hover */}
         <div
           className="

@@ -2,7 +2,7 @@ import React from 'react'
 
 const Mainlayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className='container mx-auto my-32'>{children}</div>
+    <div className='min-h-screen w-full bg-gradient-to-br from-[#19182d] via-[#201e3e] to-[#231c34]"'>{children}</div>
   )
 }
 

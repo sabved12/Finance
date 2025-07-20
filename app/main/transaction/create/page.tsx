@@ -4,11 +4,11 @@ import React from 'react'
 import AddTransactionForm from "../_components/AddTransactionForm"
 import { getTransaction } from '@/actions/transaction';
 
-const AddTransactionPage =async ({searchparams}) => {
+const AddTransactionPage =async ({searchParams}) => {
 
 const accounts=await getUserAccounts();
 
-const editId=searchparams?.edit;
+const editId=searchParams?.edit;
 
 let initialData=null;
   if(editId){
@@ -17,8 +17,8 @@ let initialData=null;
   }
 
   return (
-    <div className=' mx-auto-px-5 items-center justify-center '>
-        
+    <div className=' mt-15 mx-auto-px-5 items-center justify-center '>
+       
 
         <AddTransactionForm
             accounts={accounts}

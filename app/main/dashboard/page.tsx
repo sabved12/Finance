@@ -13,7 +13,7 @@ async function DashboardPage() {
   ]);
 
   return (
-    <div className="py-8 px-2 md:px-6 bg-gradient-to-br from-[#17152a] via-[#22203a] to-[#18162c] min-h-screen text-white">
+    <div className="mt-15 py-8 px-2 md:px-6 bg-gradient-to-br from-[#17152a] via-[#22203a] to-[#18162c] min-h-screen text-white">
       {/* Overview, budget (if any) */}
 
       {/* Accounts grid (Add + All) */}

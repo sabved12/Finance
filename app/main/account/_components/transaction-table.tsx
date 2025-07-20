@@ -51,12 +51,46 @@ export function TransactionTable({ transactions }) {
 
   const filteredAndSortedTransactions = useMemo(() => {
     let result = [...transactions];
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
-      result = result.filter((transaction) =>
-        transaction.description?.toLowerCase().includes(searchLower)
-      );
-    }
+
+
+// In your useMemo:
+      if (searchTerm) {
+        const searchLower = searchTerm.toLowerCase();
+
+        result = result.filter((transaction) => {
+          // description match
+          const inDescription = transaction.description?.toLowerCase().includes(searchLower);
+
+          // Try to parse the search string as a date
+          let inDate = false;
+          try {
+            // Try some common formats
+            const transactionDate = new Date(transaction.date);
+            // Format the transaction date in multiple user-friendly ways
+            const dateFormats = [
+              "PPP",       // "Jul 20, 2024"
+              "dd MMM",    // "20 Jul"
+              "d MMM",     // "5 Aug"
+              "MMMM d",    // "July 20"
+              "d MMMM",    // "20 July"
+              "yyyy-MM-dd" // "2024-07-20"
+            ];
+
+            inDate = dateFormats.some(fmt =>
+              format(transactionDate, fmt).toLowerCase().includes(searchLower)
+            );
+
+            // Also allow a "jul" or "march" input to match just the month
+            if (!inDate) {
+              const monthName = format(transactionDate, "LLLL").toLowerCase(); // "july"
+              inDate = monthName.includes(searchLower);
+            }
+          } catch { /* ignore parse errors */ }
+
+          return inDescription || inDate;
+        });
+      }
+
     if (typeFilter) {
       result = result.filter((transaction) => transaction.type === typeFilter);
     }

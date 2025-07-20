@@ -84,68 +84,76 @@ export async function getAccountWithTransactions(accountId:string){
 
 }
 
+
+
+// ... your other functions ...
+
 export async function bulkDeleteTransactions(transactionIds: string[]) {
   try {
-    // Step 1: Authenticate Clerk User
     const { userId } = await auth();
     if (!userId) throw new Error("User not authenticated");
 
-    // Step 2: Lookup the user in the Prisma DB
     const user = await db.user.findUnique({
-      where: { clerkUserId: userId }
+      where: { clerkUserId: userId },
     });
     if (!user) throw new Error("User not found");
 
-    // Step 3: Find the transactions to be deleted and calculate balance changes
-    const transactions = await db.transaction.findMany({
+    // 1. Find the transactions to be deleted to identify the affected accounts
+    const transactionsToDelete = await db.transaction.findMany({
       where: {
         id: { in: transactionIds },
         userId: user.id,
-      }
+      },
+      select: {
+        accountId: true, // We only need the account IDs
+      },
     });
 
-    // Step 4: Compute account balance changes for all involved accounts
-    // - Deleting an EXPENSE increases balance, deleting INCOME decreases
-    const accountBalanceChanges = transactions.reduce((acc, transaction) => {
-      // If expense: add back the amount; If income: subtract the amount
-      const amount = transaction.amount.toNumber(); 
-      const change = transaction.type === "EXPENSE" ? amount : -amount;
-      acc[transaction.accountId] = (acc[transaction.accountId] || 0) + change;
-      return acc;
-    }, {} as Record<string, number>);
+    if (transactionsToDelete.length !== transactionIds.length) {
+      return { success: false, error: "Some transactions could not be found." };
+    }
+    
+    // Get a unique list of all account IDs that will be affected
+    const affectedAccountIds = [...new Set(transactionsToDelete.map(t => t.accountId))];
 
-    // Step 5: Delete transactions and update balances atomically
+    // 2. Use a transaction to ensure data integrity
     await db.$transaction(async (tx) => {
+      // First, delete the transactions
       await tx.transaction.deleteMany({
         where: {
           id: { in: transactionIds },
           userId: user.id,
-        }
+        },
       });
 
-      for (const [accountId, balanceChange] of Object.entries(accountBalanceChanges)) {
+      // 3. Now, loop through each affected account and recalculate its balance
+      for (const accountId of affectedAccountIds) {
+        // Find all remaining transactions for the account
+        const remainingTransactions = await tx.transaction.findMany({
+          where: { accountId: accountId },
+        });
+
+        // Calculate the new, correct balance from scratch
+        const newBalance = remainingTransactions.reduce((sum, t) => {
+          return t.type === "INCOME" ? sum + t.amount.toNumber() : sum - t.amount.toNumber();
+        }, 0);
+
+        // Update the account with the correct balance
         await tx.account.update({
           where: { id: accountId },
-          data: {
-            balance: {
-              increment: balanceChange
-            }
-          }
+          data: { balance: newBalance },
         });
       }
     });
 
-    // Step 6: Cache revalidation (use paths that affect related UI)
+    // 4. Revalidate all affected pages
     revalidatePath("/main/dashboard");
-    // Optionally revalidate affected accounts, if user navigates there
-    // If you have all account IDs, you can also loop and revalidate accounts
-    revalidatePath("/main/account/[id]");
+    for (const accountId of affectedAccountIds) {
+      revalidatePath(`/main/account/${accountId}`);
+    }
 
-    // Step 7: Return
     return { success: true };
   } catch (error: any) {
-    // For debug, you can log:
-    // console.error("Bulk delete failed:", error);
     return { success: false, error: error.message || "Server error" };
   }
 }

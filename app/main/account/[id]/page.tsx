@@ -16,7 +16,7 @@ export default async function AccountPage({ params }) {
   const { transactions, ...account } = accountData;
 
   return (
-    <div className="space-y-10 px-10 pt-10 pb-20 bg-gradient-to-br from-[#19182d] via-[#201e3e] to-[#231c34] min-h-screen text-white">
+    <div className=" mt-15 px-10 pt-10 pb-20 bg-gradient-to-br from-[#19182d] via-[#201e3e] to-[#231c34] min-h-screen text-white">
       {/* ACCOUNT OVERVIEW */}
       <div className="flex flex-col md:flex-row md:justify-between gap-8">
         <div>

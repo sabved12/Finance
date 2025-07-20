@@ -8,6 +8,26 @@ import {GoogleGenerativeAI} from "@google/generative-ai"
 
 const genAI=new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+
+const allowedCategories = [
+  "housing", "transportation", "groceries", "utilities", "entertainment",
+  "food", "shopping", "healthcare", "education", "personal", "travel",
+  "insurance", "gifts", "bills", "other expense", "other-expense", "uncategorized"
+];
+
+function normalizeCategory(str) {
+  return str ? str.trim().toLowerCase().replace(/[\s_-]+/g, "") : "";
+}
+function matchCategory(aiCategory, allowedCategories) {
+  if (!aiCategory) return "uncategorized";
+  const normAI = normalizeCategory(aiCategory);
+  for (const cat of allowedCategories) {
+    if (normalizeCategory(cat) === normAI) return cat;
+  }
+  return "uncategorized";
+}
+
+
 function calcNextRecurDate(startDate, interval){
     const date= new Date(startDate);
 
@@ -221,7 +241,7 @@ export async function updateTransaction(id, data) {
           ...data,
           nextRecurringDate:
             data.isRecurring && data.recurringInterval
-              ? calculateNextRecurringDate(data.date, data.recurringInterval)
+              ? calcNextRecurDate(data.date, data.recurringInterval)
               : null,
         },
       });
@@ -368,8 +388,16 @@ export async function processPdfForAccount(formData: FormData, accountId: string
     };
 
     const result = await model.generateContent([prompt, pdfPart]);
+    // Get the raw text and trim whitespace from the ends
+
     const responseText = result.response.text().replace(/^```json\n|```$/g, "").trim();
-    const transactions = JSON.parse(responseText);
+    const cleanedWrapper = responseText.replace(/^```(json)?\n?|```$/g, "").trim();
+    
+    // Step 2: Remove ALL backticks from anywhere inside the string
+    const sanitizedText = cleanedWrapper.replace(/`/g, "");
+
+    // Now, parse the fully sanitized text
+    const transactions = JSON.parse(sanitizedText);
 
     if (!Array.isArray(transactions) || transactions.length === 0) {
       return { success: "PDF processed, but no transactions were found." };
@@ -386,9 +414,7 @@ export async function processPdfForAccount(formData: FormData, accountId: string
         amount: t.amount,
         type: t.type,
         accountId: accountId,
-        category: "uncategorized",
-        // --- ✅ THE FIX: Step 2 ---
-        // Add the authenticated user's ID to every transaction
+        category: t.category,
         userId: user.id,
       };
     });
@@ -407,8 +433,8 @@ export async function processPdfForAccount(formData: FormData, accountId: string
     revalidatePath(`/main/account/${accountId}`);
     return { success: `Successfully imported ${transactionsToCreate.length} transactions and updated the balance.` };
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("--- PDF Processing Failed ---", error);
-    return { error: "Failed to read data from the PDF or update the database." };
+    return { error: `Failed to process PDF. Details: ${error.message}` };
   }
 }
