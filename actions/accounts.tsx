@@ -108,10 +108,8 @@ export async function bulkDeleteTransactions(transactionIds: string[]) {
     // - Deleting an EXPENSE increases balance, deleting INCOME decreases
     const accountBalanceChanges = transactions.reduce((acc, transaction) => {
       // If expense: add back the amount; If income: subtract the amount
-      const change =
-        transaction.type === "EXPENSE"
-          ? transaction.amount
-          : -transaction.amount;
+      const amount = transaction.amount.toNumber(); 
+      const change = transaction.type === "EXPENSE" ? amount : -amount;
       acc[transaction.accountId] = (acc[transaction.accountId] || 0) + change;
       return acc;
     }, {} as Record<string, number>);

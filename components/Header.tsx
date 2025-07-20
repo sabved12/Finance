@@ -11,20 +11,25 @@ import Dashboard from "@/app/main/dashboard/page";
 const Header: React.FC = async () => {
   await checkUser();
   return (
-    <header className="fixed top-0 w-full  z-50 bg-white/80 dark:bg-gradient-to-r dark:from-[#050919cc] dark:via-[#0b1831cc] dark:to-[#02c8e3bb] backdrop-blur-md border-b border-cyan-500/20 shadow-lg">
+    <header className="
+      fixed top-0 w-full z-50
+      bg-gradient-to-r from-[#211a32] via-[#191730] to-[#181429]
+      bg-opacity-90 backdrop-blur-[10px]
+      border-b border-violet-500/20 shadow-md
+    ">
       <nav className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
         {/* Brand/Logo */}
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/images/finlogo.png"
+            src="/images/logo.png"
             alt="Welth Logo"
             width={160}
             height={44}
             className="h-12 w-auto object-contain rounded-xl shadow"
             priority
           />
-          <span className="text-2xl font-bold tracking-tight text-cyan-700 dark:text-cyan-200 hidden sm:inline">
-            Welth Finance
+          <span className="text-2xl font-bold tracking-tight text-violet-200 dark:text-cyan-200 hidden sm:inline">
+            Fintrack Finance
           </span>
         </Link>
 
