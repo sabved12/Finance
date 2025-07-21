@@ -61,7 +61,8 @@ This project was built with a modern, scalable, and type-safe technology stack, 
 * **Framework:** **Next.js** was chosen for its powerful full-stack capabilities, including Server Components and Server Actions, which streamline data fetching and mutations.
 * **Database & ORM:** **Supabase** and **Prisma** provide a robust, type-safe foundation for all database operations, ensuring data integrity.
 * **AI Integration:** **Google's Gemini API** is leveraged for its state-of-the-art multimodal understanding, allowing for flexible and intelligent parsing of financial documents.
-
+* **UI**: Shadcn/ui
+* **Authentication**:Clerk
 ---
 
 ## Getting Started
@@ -94,12 +95,13 @@ To get a local copy up and running, follow these simple steps.
     * Fill in the required keys in `.env.local` (see below).
 
 4.  **Sync the Database:**
-    * Push the Prisma schema to your database. This will create all the necessary tables.
-        ```bash
-        npx prisma db push
+    Run database migrations:
+    Apply the database schema to your PostgreSQL database.
+
+    npx prisma migrate dev
         ```
 
-5.  **Run the App:**
+6.  **Run the App:**
     ```bash
     npm run dev
     ```
